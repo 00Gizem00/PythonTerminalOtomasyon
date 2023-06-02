@@ -104,14 +104,19 @@ def delete_student():
                 print("Invalid id. This ID does not exist. Please enter a valid ID.")
             else:
                 valid_input = True
-                curser.execute("DELETE FROM Students WHERE st_id = ?", (input_id,))
-                conn.commit()
-                print("Student deleted successfully.")
-                time.sleep(1)
-                os.system('cls')
-                menu()
+                confirm = input("Öğrenciyi silmek istediğinize emin misiniz? (E/H): ")
+                if confirm.upper() == "E":
+                    curser.execute("DELETE FROM Students WHERE st_id = ?", (input_id,))
+                    conn.commit()
+                    print("Student deleted successfully.")
+                else:
+                    print("Student not deleted.")
         except ValueError:
             print("Invalid id. Please enter a number.")
+
+    time.sleep(1)
+    os.system('cls')
+    menu()
 
 
 while option != 0:
