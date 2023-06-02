@@ -23,6 +23,13 @@ def menu():
 
 menu()
 
+# Function to check if the ID exists in the database
+def id_exists_in_database(input_id):
+    curser.execute("SELECT COUNT(*) FROM Students WHERE st_id = ?", (input_id,))
+    result = curser.fetchone()
+    return result[0] > 0
+
+
 def list_student():
     os.system('cls')
     curser.execute("SELECT * FROM Students")
@@ -87,14 +94,24 @@ def delete_student():
     print("------------------------------------------------------------------------------------------------------------------")
     for student in students:
         print(student[0],student[1],student[2],student[3],student[4], sep="\t\t")
-    print("------------------------------------------------------------------------------------------------------------------")   
-    input_id = input("Enter id: ")
-    curser.execute("DELETE FROM Students WHERE st_id = ?", (input_id))
-    conn.commit()
-    print("Student deleted successfully.")
-    time.sleep(1)
-    os.system('cls')
-    menu()
+    print("------------------------------------------------------------------------------------------------------------------")
+    valid_input = False
+    while not valid_input:
+        try: 
+            input_id = int(input("Enter id: "))
+            # Check if the ID exists in the database
+            if not id_exists_in_database(input_id):  # Replace with your database check logic
+                print("Invalid id. This ID does not exist. Please enter a valid ID.")
+            else:
+                valid_input = True
+                curser.execute("DELETE FROM Students WHERE st_id = ?", (input_id,))
+                conn.commit()
+                print("Student deleted successfully.")
+                time.sleep(1)
+                os.system('cls')
+                menu()
+        except ValueError:
+            print("Invalid id. Please enter a number.")
 
 
 while option != 0:
