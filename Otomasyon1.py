@@ -6,6 +6,7 @@ conn = sqlite3.connect('Student.db')
 curser = conn.cursor()
 
 def menu():
+    os.system('cls')
     print(' [1] Öğrencileri Listele')
     print(' [2] Öğrenci Ekle')
     print(' [3] Öğrenci Sil')
@@ -16,6 +17,7 @@ def menu():
 menu()
 
 def list_student():
+    os.system('cls')
     curser.execute("SELECT * FROM Students")
     students = curser.fetchall()
     print("ID\t\tName\t\tSurname\t\tAge\t\tGender")
@@ -39,32 +41,34 @@ def add_student():
     conn.commit()
 
     print("Student added successfully.")
+    time.sleep(1) 
+    os.system('cls')
     menu()
 
 def delete_student():
     os.system('cls')
     curser.execute("SELECT * FROM Students")
     students = curser.fetchall()
-    print("ID\t\tName\t\tSurname\t\tAge\t\tGender")
+    print("ID,Name,Surname,Age,Gender", sep="\t\t")
     print("------------------------------------------------------------------------------------------------------------------")
     for student in students:
-        print(student[0],"\t\t",student[1],"\t\t",student[2],"\t\t",student[3],"\t\t",student[4])
+        print(student[0],student[1],student[2],student[3],student[4], sep="\t\t")
     print("------------------------------------------------------------------------------------------------------------------")   
     input_id = input("Enter id: ")
-    curser.execute("DELETE FROM Students WHERE st_id = ?", (input_id,))
+    curser.execute("DELETE FROM Students WHERE st_id = ?", (input_id))
     conn.commit()
     print("Student deleted successfully.")
+    time.sleep(1)
+    os.system('cls')
     menu()
 
 
 while option != 0:
     if option == 1:
-        os.system('cls')
         list_student()
     elif option == 2:
         add_student()
     elif option == 3:
-        os.system('cls')
         delete_student()
     else:
         print("Invalid option.")
