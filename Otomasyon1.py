@@ -5,6 +5,7 @@ import time
 conn = sqlite3.connect('Student.db')
 curser = conn.cursor()
 
+
 def menu():
     os.system('cls')
     print(' [1] Öğrencileri Listele')
@@ -12,7 +13,13 @@ def menu():
     print(' [3] Öğrenci Sil')
     print(' [0] Exit the program')
     global option
-    option = int(input("Enter your option: "))
+    valid_input = False
+    while not valid_input:
+        try:
+            option = int(input("Enter your option: "))
+            valid_input = True
+        except ValueError:
+            print("Invalid option. Please enter a number.")
 
 menu()
 
@@ -20,10 +27,10 @@ def list_student():
     os.system('cls')
     curser.execute("SELECT * FROM Students")
     students = curser.fetchall()
-    print("ID\t\tName\t\tSurname\t\tAge\t\tGender")
+    print("ID,Name,Surname,Age,Gender", sep="\t\t")
     print("------------------------------------------------------------------------------------------------------------------")
     for student in students:
-        print(student[0],"\t\t",student[1],"\t\t",student[2],"\t\t",student[3],"\t\t",student[4])
+        print(student[0],student[1],student[2],student[3],student[4], sep="\t\t")
     print("------------------------------------------------------------------------------------------------------------------")
     input("Press enter to continue...")
     if option != 0:
@@ -32,10 +39,37 @@ def list_student():
 
 def add_student():
     os.system('cls')
-    input_name = input("Enter name: ")
-    input_surname = input("Enter surname: ")
-    input_age = input("Enter age: ")
-    input_gender = input("Enter gender: ")
+    # try and except block to catch errors for name, surname , gender and age
+    valid_input = False
+    while not valid_input:
+        input_name = input("Enter name: ")
+        if input_name.isdigit():
+            print("Invalid name. Please enter a string.")
+        else:
+            valid_input = True
+
+    valid_input = False
+    while not valid_input:
+        input_surname = input("Enter surname: ")
+        if input_surname.isdigit():
+            print("Invalid surname. Please enter a string.")
+        else:
+            valid_input = True
+
+    valid_input = False
+    while not valid_input:
+        try:
+            input_age = int(input("Enter age: "))
+            valid_input = True
+        except ValueError:
+            print("Invalid age. Please enter a number.")
+    valid_input = False
+    while not valid_input:
+        input_gender = input("Enter gender: ").upper()
+        if input_gender not in ["KADIN", "ERKEK"]:
+            print("Invalid gender. Please enter either 'Kadin' or 'Erkek'.")
+        else:
+            valid_input = True
     
     curser.execute("INSERT INTO Students (name, surname, age, gender) VALUES (?, ?, ?, ?)", (input_name, input_surname, input_age, input_gender))
     conn.commit()
