@@ -7,7 +7,7 @@ curser = conn.cursor()
 
 def menu():
     print(' [1] Öğrencileri Listele')
-    print(' [2] Öğrenci Ekle') # income or expense
+    print(' [2] Öğrenci Ekle')
     print(' [3] Öğrenci Sil')
     print(' [0] Exit the program')
     global option
