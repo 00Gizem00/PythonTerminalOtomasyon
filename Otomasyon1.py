@@ -10,7 +10,8 @@ def menu():
     os.system('cls')
     print(' [1] Öğrencileri Listele')
     print(' [2] Öğrenci Ekle')
-    print(' [3] Öğrenci Sil')
+    print(' [3] Öğrenci Düzenle')
+    print(' [4] Öğrenci Sil')
     print(' [0] Exit the program')
     global option
     valid_input = False
@@ -86,6 +87,64 @@ def add_student():
     os.system('cls')
     menu()
 
+def update_student():
+    os.system('cls')
+    curser.execute("SELECT * FROM Students")
+    students = curser.fetchall()
+    print("ID","Name","Surname","Age","Gender", sep="\t\t")
+    print("------------------------------------------------------------------------------------------------------------------")
+    for student in students:
+        print(student[0],student[1],student[2],student[3],student[4], sep="\t\t")
+    print("------------------------------------------------------------------------------------------------------------------")
+
+    choice = input("Press enter to continue or write '0' to go back to the menu: ")
+    if choice == "0":
+        os.system('cls')
+        menu()
+    else:
+        valid_input = False
+        while not valid_input:
+            try: 
+                input_id = int(input("Enter the ID of the student to update: "))
+                # Check if the ID exists in the database
+                if not id_exists_in_database(input_id):
+                    print("Invalid ID. This ID does not exist. Please enter a valid ID.")
+                else:
+                    valid_input = True
+                    curser.execute("SELECT * FROM Students WHERE st_id = ?", (input_id,))
+                    student = curser.fetchone()
+                    print("Current Details:")
+                    print("Name:", student[1])
+                    print("Surname:", student[2])
+                    print("Age:", student[3])
+                    print("Gender:", student[4])
+                    print("----------------------------------------------")
+                    input_name = input("Enter the updated name (press Enter to keep current): ")
+                    input_surname = input("Enter the updated surname (press Enter to keep current): ")
+                    input_age = input("Enter the updated age (press Enter to keep current): ")
+                    input_gender = input("Enter the updated gender (press Enter to keep current): ")
+
+                    # Update the student details in the database
+                    if input_name == "":
+                        input_name = student[1]
+                    if input_surname == "":
+                        input_surname = student[2]
+                    if input_age == "":
+                        input_age = student[3]
+                    if input_gender == "":
+                        input_gender = student[4]
+
+                    curser.execute("UPDATE Students SET name = ?, surname = ?, age = ?, gender = ? WHERE st_id = ?", (input_name, input_surname, input_age, input_gender, input_id))
+                    conn.commit()
+                    print("Student details updated successfully.")
+                    time.sleep(1)
+                    os.system('cls')
+                    menu()
+            except ValueError:
+                print("Invalid ID. Please enter a number.")
+
+
+
 def delete_student():
     os.system('cls')
     curser.execute("SELECT * FROM Students")
@@ -95,7 +154,7 @@ def delete_student():
     for student in students:
         print(student[0],student[1],student[2],student[3],student[4], sep="\t\t")
     print("------------------------------------------------------------------------------------------------------------------")
-    choice = (input("Press enter to continue or write '0' back to menu..."))
+    choice = input("Press enter to continue or write '0' back to menu...")
     if choice == "0":
         os.system('cls')
         menu()
@@ -130,6 +189,8 @@ while option != 0:
     elif option == 2:
         add_student()
     elif option == 3:
+        update_student()
+    elif option == 4:
         delete_student()
     else:
         print("Invalid option.")
