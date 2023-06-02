@@ -16,15 +16,17 @@ def menu():
 menu()
 
 def list_student():
-    os.system('cls')
-    curser.execute("SELECT * FROM student")
+    curser.execute("SELECT * FROM Students")
     students = curser.fetchall()
     print("ID\t\tName\t\tSurname\t\tAge\t\tGender")
     print("------------------------------------------------------------------------------------------------------------------")
     for student in students:
         print(student[0],"\t\t",student[1],"\t\t",student[2],"\t\t",student[3],"\t\t",student[4])
     print("------------------------------------------------------------------------------------------------------------------")
-    menu()
+    input("Press enter to continue...")
+    if option != 0:
+        os.system('cls')
+        menu()
 
 def add_student():
     os.system('cls')
@@ -33,30 +35,36 @@ def add_student():
     input_age = input("Enter age: ")
     input_gender = input("Enter gender: ")
     
-    curser.execute("INSERT INTO student (name, surname, age, gender) VALUES (?, ?, ?, ?)", (input_name, input_surname, input_age, input_gender))
+    curser.execute("INSERT INTO Students (name, surname, age, gender) VALUES (?, ?, ?, ?)", (input_name, input_surname, input_age, input_gender))
     conn.commit()
-    conn.close()
 
     print("Student added successfully.")
     menu()
 
 def delete_student():
     os.system('cls')
+    curser.execute("SELECT * FROM Students")
+    students = curser.fetchall()
+    print("ID\t\tName\t\tSurname\t\tAge\t\tGender")
+    print("------------------------------------------------------------------------------------------------------------------")
+    for student in students:
+        print(student[0],"\t\t",student[1],"\t\t",student[2],"\t\t",student[3],"\t\t",student[4])
+    print("------------------------------------------------------------------------------------------------------------------")   
     input_id = input("Enter id: ")
-    curser.execute("DELETE FROM student WHERE st_id = ?", (input_id,))
+    curser.execute("DELETE FROM Students WHERE st_id = ?", (input_id,))
     conn.commit()
-    conn.close()
-
     print("Student deleted successfully.")
     menu()
 
 
 while option != 0:
     if option == 1:
+        os.system('cls')
         list_student()
     elif option == 2:
         add_student()
     elif option == 3:
+        os.system('cls')
         delete_student()
     else:
         print("Invalid option.")
@@ -69,3 +77,5 @@ print("Exiting the program...")
 time.sleep(1)
 os.system('cls')
 print("Program exited.")
+
+conn.close()
